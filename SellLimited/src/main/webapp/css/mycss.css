@@ -1,0 +1,48 @@
+#wrap {
+	width: 100%;
+	position: relative;
+}
+
+#top{
+	width:100%;
+	background:url(/images/japanstyle_files/20160926_01.png) repeat-x;
+	height:184px;
+}
+
+.head_txt strong{color:#333; padding: 0;}
+.head_txt{width:810px;font-size:12px;line-height:33px;text-align:right;}
+.head_txt span{font-size:10px;color:#d8d8d8;padding:0 7px;}
+.head_txt A:link{color:#333;text-decoration:none;}
+.head_txt A:visited{color:#333;text-decoration:none}
+.head_txt A:active{color:#333;text-decoration:none;}
+.head_txt A:hover{color:#333;text-decoration:none;}
+.head_txt a{position: relative; display: inline-block;  float: left; text-align: right}
+.head_txt span{position: relative; display: inline-block;  float: left;}
+.head_txt img{position: relative; display: inline-block;  float: left;}
+
+.layer_add2{position: relative; float: left;}
+.layer_add2:hover .list_layer2{display: block;}
+
+.list_layer2 li a:hover{background:#f1f1f1;}
+.list_layer2{position: absolute; border:1px solid #614190; width: 80px; z-index: 101; background: #fff; padding: 7px 0; top:32px; left:-20px; display: none; }
+.list_layer2 li{ line-height: 20px; display:block; float: none;}
+.list_layer2 li a{width: 100%; text-align: center; }
+.list_layer2 li a:link{color:#614190}
+
+.logopart{width:1020px;margin:0 auto;height:125px;position:relative;}
+.logopart li{float:none;}
+.logopart_left{position: relative; margin:0 auto;width:213px;}
+.logopart_left img{margin-top:18px;}
+.logopart_right{width:301px;}
+.logopart_right img{margin-top:26px;}
+
+.logopart_center{position: relative; margin:17px auto 0 auto;width:506px;}
+.logopart_center span{float:left;}
+
+.searchbox_form div li{clear:both;}
+.searchbox_form{background:url(/images/japanstyle_files/20160926_06.png) no-repeat;}
+
+
+
+
+

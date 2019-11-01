@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- <typeAliases>
+	<typeAlias alias="mVO" type="com.vo.MemberVO"/>
+</typeAliases> -->
+	<mappers>
+		<mapper resource="com/mybatis/mapper/member.xml" />
+		<mapper resource="com/mybatis/mapper/product.xml"/>
+		<mapper resource="com/mybatis/mapper/account.xml" />
+		<mapper resource="com/mybatis/mapper/favorite.xml" />
+		<mapper resource="com/mybatis/mapper/aucLog.xml" />
+		<mapper resource="com/mybatis/mapper/seed.xml" />
+		<mapper resource="com/mybatis/mapper/auction.xml" />
+	</mappers>
+</configuration>

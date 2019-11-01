@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+
+
+.bm_body span{margin-top:27px;}
+.bb_left{float:left;width:258px;}
+.bb_right{float:left;width:762px;font-size:12px;color:#888;line-height:18px;letter-spacing:-0.5px;}
+.bmslash{font-size:11px;color:#F7F7F7;padding:0 9px;}
+.bm_body span .copy{display:block;color:#999;font-size:11px;font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;margin:12px 0 15px 0;letter-spacing:0px;}
+.bm_body p{font-size:12px;color:#888;line-height:18px;margin-top:22px;}
+
+.quickTapbox_wrap { position:fixed;top: 0;width: 718px;height: 100%;z-index: 5000;right: 0;}
+.quickTapbg_wrap { position:absolute;top: 0;left: 0;height: 100%;background: url(/images/quick_grayBg.gif) repeat-y;}
+
+.quickTapbg_a1 { position: relative;width: 100%;height: 100%;background: url(/images/quick_grayBg.gif) repeat-y;}
+.quickTapbg1 { position:absolute;top: 0;left: 0;height: 602px;}
+.quicklistTap li { display: block;}
+
+.quickTapbox { }
+.quickTapbg { position: absolute;top: 0; right: 0;height: 100%;background: url(/images/quick_grayBg.gif); background-repeat : repeat-y; position:fixed;}
+
+.quickTapbox2 { position:fixed;top: 0;width: 641px;height: 100%;z-index: 5000;right: 0;}
+.quickTapbg2 { position: absolute;top: 0; right: 0;width: 641px;height: 100%;background: #fff repeat-y;border: 2px solid #4C376B;padding-top: 33px;}
+.quickResultBox { position: relative;width: 406px;height: 81px;}
+.quickResultBox table { position: absolute;top: 14px;left: 101px;}

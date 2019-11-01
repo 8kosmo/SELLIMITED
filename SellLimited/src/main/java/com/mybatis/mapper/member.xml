@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.MemberMapper">
+
+   <select id="memberList" parameterType="map" resultType="map"> 
+   SELECT mem_password, mem_bdate, mem_gender, mem_email, mem_address, mem_nickname, mem_phone, mem_name 
+   FROM member
+   WHERE mem_id=#{mem_id}  
+   </select>
+
+	<select id="idInspection" parameterType="map" resultType="string">
+		 SELECT DECODE(
+		 			(SELECT MEM_ID FROM member WHERE mem_id=#{mem_id})
+		 			,#{mem_id}
+		 			,'_ok'
+		 			,'false')
+		   FROM DUAL
+	</select>
+	
+	<insert id="memberIns" parameterType="map">
+		INSERT INTO MEMBER
+			(mem_id,mem_name,mem_bdate,mem_gender,mem_jdate
+			,mem_email,mem_address,mem_nickname,mem_password,mem_phone) 
+		VALUES 
+			(#{mem_id}, #{mem_name}, #{yyyy}||'/'||#{mm}||'/'||#{dd}, #{mem_gender}
+			,(SELECT TO_CHAR(SYSDATE, 'YYYY'||'/'||'MM'||'/'||'DD') FROM DUAL)
+			,#{mem_email}, #{zipcode}||' '||#{address}||' '||#{address_detail}, #{mem_nickname}, #{mem_password}, #{mem_phone})
+	</insert>
+
+   <update id="memberUpd" parameterType="map">
+      UPDATE MEMBER
+      SET mem_email=#{mem_email}
+         ,mem_nickname=#{mem_nickname}
+         ,mem_phone=#{mem_phone}
+         ,mem_password=#{mem_password}
+      WHERE mem_id=#{mem_id}
+   </update>
+	
+   <select id="login" parameterType="map" statementType="CALLABLE">
+      {call proc_login(#{mem_id, mode=IN, jdbcType=VARCHAR, javaType=java.lang.String}
+                  ,#{mem_password, mode=IN, jdbcType=VARCHAR, javaType=java.lang.String}
+                  ,#{mem_name, mode=OUT, jdbcType=VARCHAR, javaType=java.lang.String}
+                  )}
+   </select> 
+	
+	<select id="memberDel" parameterType="map" statementType="CALLABLE">
+      {call proc_memberDel(#{mem_id, mode=IN, jdbcType=VARCHAR, javaType=java.lang.String}
+                      	  ,#{mem_pw, mode=IN, jdbcType=VARCHAR, javaType=java.lang.String}
+                  			)}
+   </select>
+	
+</mapper> 

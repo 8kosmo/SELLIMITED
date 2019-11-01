@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.auctionMapper">
+	<select id="beforeAuctionList" resultType="map">
+		SELECT auction_info.item_code, auction_info.bid_code, cntSeed, mem_id, sub_category_code, product_name, model_name, auct_period, buynow_price, start_price, photo_name 
+		FROM sale_item, (SELECT item_code, MAX(photo_name) photo_name FROM item_photo
+		GROUP BY item_code) item_photo,(SELECT bid_code, count(bidders_id) cntSeed FROM seed GROUP BY bid_code) seed, auction_info
+		WHERE status = '시드참여중'
+		AND SALE_ITEM.ITEM_CODE = ITEM_PHOTO.ITEM_CODE
+		AND ITEM_PHOTO.ITEM_CODE = auction_info.item_code
+		AND AUCTION_INFO.END_SEED <![CDATA[<]]> TO_CHAR(SYSDATE,'YYYY/MM/DD/HH24/MI/SS')
+		AND AUCTION_INFO.BID_CODE = SEED.BID_CODE(+)
+	</select> 
+	<select id="endAuctionList" resultType="map">
+    SELECT sale_item.mem_id,bid_log.bid_code,start_price, bid_log.final_price, bid_log.bidder_id, bid_log.bid_w_bidder, auct_startdate||'~'||auct_enddate auction_period 
+    FROM bid_log,auct_progress,sale_item,(SELECT bid_code, MAX(final_price) end_price  
+                        FROM bid_log 
+                        WHERE bid_w_bidder is null 
+                        GROUP BY bid_code)a
+    WHERE bid_log.bid_code = auct_progress.bid_code
+    AND bid_w_bidder is null
+    AND SALE_ITEM.ITEM_CODE = auct_progress.bid_code
+    AND final_price in a.end_price
+    AND a.bid_code = bid_log.bid_code
+    AND auct_enddate <![CDATA[<]]> TO_CHAR(SYSDATE,'YYYY/MM/DD/HH24/MI/SS')
+   </select>
+	<insert id="auctionIns" parameterType="map">
+		INSERT INTO AUCT_PROGRESS (bid_code, auct_startdate, auct_enddate)
+					VALUES (#{bid_code}, TO_CHAR(SYSDATE,'YYYY/MM/DD/HH24/MI/SS'), TO_CHAR(SYSDATE+#{auct_period}/24,'YYYY/MM/DD/HH24/MI/SS'))
+	</insert>
+	<update id="statusAuction" parameterType="map">
+		UPDATE SALE_ITEM SET status = '경매진행중'
+		WHERE item_code = #{item_code}
+	</update>
+ </mapper>

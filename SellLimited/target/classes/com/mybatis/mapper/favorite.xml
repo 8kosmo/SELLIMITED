@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.favMapper">
+   
+   <select id="favSellerList" parameterType="map" resultType="map">
+      SELECT fav_seller.mem_id,fav_sellerid, mem_jdate, cntBid, min_date
+              FROM (SELECT min(auct_startdate) min_date, count(bid_code) cntBid
+                        FROM (
+                              SELECT auct_progress.bid_code,auct_startdate
+                                FROM sale_item, auction_info, auct_progress
+                               WHERE sale_item.item_code=auction_info.item_code
+                                 AND auction_info.bid_code=auct_progress.bid_code
+                                   AND sale_item.mem_id=#{mem_id}       
+                             )
+                    )
+                   ,member, fav_seller
+            WHERE member.mem_id=fav_sellerid
+            AND fav_seller.mem_id=#{mem_id}  
+   </select>
+   <select id="getFavSellerList" parameterType="map" resultType="int">
+            SELECT count(fav_sellerid)
+              FROM (SELECT min(auct_startdate) min_date, count(bid_code) cntBid
+                        FROM (
+                              SELECT auct_progress.bid_code,auct_startdate
+                                FROM sale_item, auction_info, auct_progress
+                               WHERE sale_item.item_code=auction_info.item_code
+                                 AND auction_info.bid_code=auct_progress.bid_code        
+                             )
+                    )
+                   ,member, fav_seller
+            WHERE member.mem_id=fav_sellerid
+            AND fav_seller.mem_id=#{mem_id}
+   </select>
+   
+   <delete id="favSellerDel" parameterType="map">
+      DELETE fav_seller
+      WHERE mem_id = #{mem_id}
+      AND fav_sellerid = #{fav_sellerid}
+   </delete>
+   
+   <select id="favSellerCheck" parameterType="map" resultType="int">
+      SELECT NVL((SELECT 0 FROM fav_seller
+      WHERE fav_sellerid = #{fav_sellerid}
+      AND mem_id = #{mem_id}),1) FROM dual
+   </select>
+
+   <select id="favProductList" parameterType="string" resultType="map">
+   <!-- 즉시구매가격 없음 테이블 수정 필요 -->
+      SELECT attached_file,product_name, mem_id ,start_price 
+      FROM sale_item,auct_progress
+      WHERE sale_item.item_code = (SELECT fav_bidcode FROM fav_item WHERE  mem_id = #{mem_id})
+   </select>
+   
+   
+   <delete id="favProductDel">
+      DELETE fav_item
+      WHERE mem_id = #{mem_id}
+      AND fav_bidcode = #{fav_bidcode}
+   </delete>
+   
+   <insert id="favSellerIns">
+      INSERT INTO FAV_SELLER (fav_sellerid,mem_id)
+      VALUES(#{fav_sellerid},#{mem_id})
+   </insert>
+   
+   <insert id="favProductIns">
+      INSERT INTO FAV_ITEM (fav_bidcode,mem_id)
+      VALUES(#{fav_bidcode},#{mem_id})
+   </insert>
+   
+   <select id="favProductCheck" parameterType="map" resultType="int">
+      SELECT NVL((SELECT 0 FROM fav_item
+      WHERE fav_bidcode = #{fav_bidcode}
+      AND mem_id = #{mem_id}),1) FROM dual
+   </select>
+</mapper>

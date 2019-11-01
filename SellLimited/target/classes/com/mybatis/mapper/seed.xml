@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.SeedMapper">
+
+   <select id="seedInsProduct" parameterType="map" resultType="map">
+     SELECT sale_item.mem_id,status, sale_item.item_code, bid_title, product_detail, 
+            nvl(seed.cur_seed,0) cur_seed,end_seed
+        FROM sale_item
+             ,(select bid_code,count(bidders_id)cur_seed from seed GROUP BY bid_code ) seed
+             ,auction_info
+          WHERE sale_item.mem_id=#{mem_id}
+          AND status='시드참여중'
+          AND auction_info.item_code=sale_item.item_code
+          AND auction_info.bid_code=seed.bid_code(+)
+   </select>
+   
+   <select id="seedList" parameterType="map" resultType="map">
+      SELECT bidders_id 
+        FROM seed 
+        WHERE bid_code=#{bid_code}
+   </select>
+   
+   <insert id="seedIns" parameterType="map">
+      INSERT INTO seed
+                 (bidders_id, bid_code, outcome)
+           VALUES
+                 (#{bidders_id},#{bid_code},'대기중')         
+   </insert>
+   
+   <insert id="bidWin" parameterType="map">
+      UPDATE seed
+         SET outcome ='낙찰'
+       WHERE bidders_id=#{bidders_id}
+         AND bid_code=#{bid_code}         
+   </insert>
+   
+   <insert id="bidLose" parameterType="map">
+      UPDATE seed
+         SET outcome ='패찰'
+       WHERE bid_code=#{bid_code}         
+   </insert>
+   
+   <select id="seedOverlapCheck" parameterType="map" resultType="string">
+        SELECT nvl((SELECT bidders_id from seed 
+         WHERE bid_code=#{bid_code}
+         AND bidders_id=#{bidders_id}),0) FROM dual 
+   </select>
+   
+   <select id="getSeedInsProdTotal" parameterType="map" resultType="int">
+           SELECT COUNT(bid_title)
+          FROM sale_item
+               ,(select bid_code,count(bidders_id)cur_seed from seed GROUP BY bid_code ) seed
+               ,auction_info
+           WHERE sale_item.mem_id=#{mem_id}
+             AND status='시드참여중'
+             AND auction_info.item_code=sale_item.item_code
+             AND auction_info.bid_code=seed.bid_code(+)
+   </select>
+</mapper>

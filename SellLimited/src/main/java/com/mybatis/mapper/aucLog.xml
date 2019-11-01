@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.aucLogMapper">
+	<select id="aucLogList" parameterType="map" resultType="map">
+		SELECT final_price 
+		FROM BID_LOG
+		WHERE bid_code = #{bid_code}
+		ORDER BY R_NUM
+	</select>
+	
+	<insert id="aucLogFirstIns" parameterType="map">
+		INSERT INTO BID_LOG (BID_CODE, bidder_id, final_price, r_num)
+             VALUES (#{bid_code}, #{mem_id}, #{start_price}+#{increase_rate}, 
+             (SELECT NVL(MAX(r_num),0) FROM bid_log WHERE bid_code=#{bid_code})+1) 
+	</insert>
+	
+	<insert id="aucLogIns" parameterType="map">
+      INSERT INTO BID_LOG (BID_CODE, bidder_id, final_price, r_num)
+             VALUES (#{bid_code}, #{mem_id}, #{final_price},
+             (SELECT NVL(MAX(r_num),0) FROM bid_log WHERE bid_code=#{bid_code})+1) 
+   </insert>
+	
+	<select id="aucLogBuyNowIns" parameterType="map" statementType="CALLABLE">
+		{call proc_aucLogBuyNowIns(
+      				 #{bid_code, mode=IN, javaType=VARCHAR, javaType=java.lang.String}
+      				,#{mem_id, mode=IN, javaType=VARCHAR, javaType=java.lang.String}
+      				,#{trade_ammount, mode=IN, javaType=VARCHAR, javaType=java.lang.String}
+      )}
+	</select>
+
+	<select id="aucWinner" parameterType="map" statementType="CALLABLE">
+      {call proc_aucWin(
+      				#{bid_code, mode=IN, javaType=VARCHAR, javaType=java.lang.String}
+      )}
+   </select>
+	<select id="looserList" parameterType="map" resultType="map">
+         SELECT bidders_id FROM seed
+      WHERE bidders_ID != (SELECT bidder_id FROM bid_log WHERE bid_w_bidder = '낙찰' AND bid_code = #{bid_code})
+      AND BID_CODE = #{bid_code}   
+      GROUP BY bidders_id
+   </select>
+   
+   <select id="myBid" parameterType="map" resultType="int">
+   		SELECT NVL((SELECT MAX(final_price) myBid FROM bid_log where bid_code = #{bid_code} AND bidder_id = #{mem_id} GROUP BY bid_code),0) FROM Dual
+   </select>
+	
+ </mapper>
